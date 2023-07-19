@@ -9,14 +9,16 @@ namespace PokeWallet
 {
     public class Trainer
     {
-        private ObservableCollection<int> PokeWallet { get; set; }
+        private ObservableCollection<int> pokeWallet { get; set; }
         public Trainer()
         {
-            PokeWallet = new ObservableCollection<int>();
+            pokeWallet = new ObservableCollection<int>();
         }
         public void Catch(int pokeId)
         {
-            PokeWallet.Add(pokeId);
+            pokeWallet.Add(pokeId);
         }
+
+        public ObservableCollection<int> PokeWallet { get { return pokeWallet; } set { pokeWallet = value; } }
     }
 }
