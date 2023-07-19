@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PokeWallet"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="483" Width="897">
     <Grid>
-        <ListView d:ItemsSource="{d:SampleData ItemCount=5}" Margin="465,0,0,0" SelectedItem="{Binding PokemonSelecionado}" ItemsSource="{Binding pokeList}">
+        <ListView d:ItemsSource="{d:SampleData ItemCount=5}" Margin="494,0,0,0" SelectedItem="{Binding PokemonSelecionado}" ItemsSource="{Binding Ash.PokeWallet}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn  Width="100" DisplayMemberBinding="{Binding Name}"/>
@@ -25,9 +25,28 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button Command="{Binding Add}" Content="Add" HorizontalAlignment="Left" Margin="328,124,0,0" VerticalAlignment="Top"/>
-        <Button Command="{Binding Remove}" Content="Remove" HorizontalAlignment="Left" Margin="319,0,0,0" VerticalAlignment="Center"/>
-        <Button Command="{Binding Update}" Content="Update" HorizontalAlignment="Left" Margin="321,293,0,0" VerticalAlignment="Top"/>
+        <Button Command="{Binding Add}" Content="Add" HorizontalAlignment="Left" Margin="397,49,0,0" VerticalAlignment="Top" Height="30" Width="77"/>
+        <Button Command="{Binding Remove}" Content="Remove" HorizontalAlignment="Left" Margin="397,96,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.508,0.645" Height="32" Width="76"/>
+        <Button Command="{Binding Update}" Content="Update" HorizontalAlignment="Left" Margin="397,150,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.555,0.657" Height="32" Width="77"/>
+        <Button Content="Catch" HorizontalAlignment="Left" Margin="397,203,0,0" VerticalAlignment="Top" Height="31" Width="77"/>
+        <ListView d:ItemsSource="{d:SampleData ItemCount=5}" Margin="2,-4,517,10" SelectedItem="{Binding PokemonSelecionado}" ItemsSource="{Binding pokeList}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn  Width="100" DisplayMemberBinding="{Binding Name}"/>
+                    <GridViewColumn  Width="50" DisplayMemberBinding="{Binding Type}"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Id}"/>
+                    <GridViewColumn Width="100">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Image Source="{Binding Sprite}" />
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
 
 
     </Grid>

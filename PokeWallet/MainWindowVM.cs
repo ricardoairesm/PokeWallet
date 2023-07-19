@@ -11,12 +11,14 @@ namespace PokeWallet
     public class MainWindowVM
     {
         public ObservableCollection<Pokemon> pokeList { get; set; }
+        public Trainer Ash { get; set; }
         public ICommand Add { get; private set; }
         public ICommand Remove { get; private set; }
         public ICommand Update { get; private set; }
         public Pokemon PokemonSelecionado { get; set; }
         public MainWindowVM()
         {
+            Ash = new Trainer();
             pokeList = new ObservableCollection<Pokemon>()
             {
                 new Pokemon("lucario",448,"steel")
@@ -32,6 +34,8 @@ namespace PokeWallet
                 telaDeCadastro.DataContext = newPokemon;
                 telaDeCadastro.ShowDialog();
                 pokeList.Add(new Pokemon(newPokemon.Name,newPokemon.Id,newPokemon.Type));
+                Ash.Catch(newPokemon.Id);
+
             });
             Remove = new RelayCommand((object _) => {
                 pokeList.Remove(PokemonSelecionado);
