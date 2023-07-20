@@ -5,20 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PokeWallet"
         mc:Ignorable="d"
-        Title="MainWindow" Height="483" Width="897">
+        Title="MainWindow" Height="641" Width="935">
     <Grid>
-        <ListView d:ItemsSource="{d:SampleData ItemCount=5}" Margin="494,0,0,0" SelectedItem="{Binding Game.PokemonSelecionado}" ItemsSource="{Binding Game.Ash.PokeWallet}">
+        <ListView d:ItemsSource="{d:SampleData ItemCount=5}" Margin="494,0,0,6" SelectedItem="{Binding Pokemon.TreinadorSelecionado}" ItemsSource="{Binding Pokemon.TrainerList}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn  Width="100"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Name}"  Width="100"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Id}"  Width="100"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding DisplayPokeWallet}"  Width="100"/>
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button Command="{Binding Add}" Content="Add" HorizontalAlignment="Left" Margin="397,49,0,0" VerticalAlignment="Top" Height="30" Width="77"/>
-        <Button Command="{Binding Remove}" Content="Remove" HorizontalAlignment="Left" Margin="397,96,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.508,0.645" Height="32" Width="76"/>
-        <Button Command="{Binding Update}" Content="Update" HorizontalAlignment="Left" Margin="397,150,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.555,0.657" Height="32" Width="77"/>
-        <Button Command="{Binding CatchPokemon}" Content="Catch" HorizontalAlignment="Left" Margin="397,203,0,0" VerticalAlignment="Top" Height="31" Width="77"/>
-        <ListView d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,0,519,6" SelectedItem="{Binding Game.PokemonSelecionado}" ItemsSource="{Binding Pokedex}">
+        <Button Command="{Binding Pokemon.AddPokemon}" Content="Add to Pokedex" HorizontalAlignment="Left" Margin="362,34,0,0" VerticalAlignment="Top" Height="35" Width="106"/>
+        <Button Command="{Binding Pokemon.RemovePokemon}" Content="Remove from Pokedex" HorizontalAlignment="Left" Margin="349,95,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.508,0.645" Height="36" Width="132"/>
+        <Button Command="{Binding Pokemon.UpdatePokemon}" Content="Update on Pokedex" HorizontalAlignment="Left" Margin="349,150,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.555,0.657" Height="32" Width="132"/>
+        <Button Command="{Binding Pokemon.CatchPokemon}" Content="Catch" HorizontalAlignment="Left" Margin="376,266,0,0" VerticalAlignment="Top" Height="31" Width="78"/>
+        <ListView d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,0,615,6" SelectedItem="{Binding Pokemon.PokemonSelecionado}" ItemsSource="{Binding Pokemon.PokeList}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn  Width="100" DisplayMemberBinding="{Binding Name}"/>
@@ -36,6 +38,8 @@
                 </GridView>
             </ListView.View>
         </ListView>
+        <Button Command="{Binding Pokemon.AddTreinador}" Content="Add Trainer" HorizontalAlignment="Left" Margin="376,336,0,0" VerticalAlignment="Top" Height="31" Width="78"/>
+        <Button Command="{Binding Pokemon.ShowTrainerWallet}" Content="Show Wallet" HorizontalAlignment="Left" Margin="376,407,0,0" VerticalAlignment="Top" Height="33" Width="78"/>
 
 
     </Grid>

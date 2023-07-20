@@ -14,5 +14,14 @@ C:\Users\ricar\source\repos\PokeWallet\PokeWallet\obj\Debug\PokeWallet.csproj.Ge
 C:\Users\ricar\source\repos\PokeWallet\PokeWallet\obj\Debug\PokeWallet.csproj.CoreCompileInputs.cache
 C:\Users\ricar\source\repos\PokeWallet\PokeWallet\obj\Debug\PokeWallet.exe
 C:\Users\ricar\source\repos\PokeWallet\PokeWallet\obj\Debug\PokeWallet.pdb
-C:\Users\ricar\source\repos\PokeWallet\PokeWallet\obj\Debug\AddPokemonWindow.g.cs
-C:\Users\ricar\source\repos\PokeWallet\PokeWallet\obj\Debug\AddPokemonWindow.baml
+C:\Users\ricar\source\repos\PokeWallet\PokeWallet\obj\Debug\PokemonInfoInput.g.cs
+C:\Users\ricar\source\repos\PokeWallet\PokeWallet\obj\Debug\PokemonInfoInput.baml
+C:\Users\ricar\source\repos\PokeWallet\PokeWallet\obj\Debug\PokemonUpdateInfoInput.g.cs
+C:\Users\ricar\source\repos\PokeWallet\PokeWallet\obj\Debug\PokemonUpdateInfoInput.baml
+C:\Users\ricar\source\repos\PokeWallet\PokeWallet\obj\Debug\TrainerInfoInput.g.cs
+C:\Users\ricar\source\repos\PokeWallet\PokeWallet\obj\Debug\TrainerInfoInput.baml
+C:\Users\ricar\source\repos\PokeWallet\PokeWallet\obj\Debug\TrainerWallet.g.cs
+C:\Users\ricar\source\repos\PokeWallet\PokeWallet\obj\Debug\TrainerWallet.baml
+C:\Users\ricar\source\repos\PokeWallet\PokeWallet\bin\Debug\Newtonsoft.Json.dll
+C:\Users\ricar\source\repos\PokeWallet\PokeWallet\bin\Debug\Newtonsoft.Json.xml
+C:\Users\ricar\source\repos\PokeWallet\PokeWallet\obj\Debug\PokeWallet.csproj.CopyComplete

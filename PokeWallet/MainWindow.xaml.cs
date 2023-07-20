@@ -25,5 +25,6 @@ namespace PokeWallet
             InitializeComponent();
             DataContext = new MainWindowVM();
         }
+
     }
 }

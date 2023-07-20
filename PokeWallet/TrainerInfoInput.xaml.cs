@@ -15,16 +15,16 @@ using System.Windows.Shapes;
 namespace PokeWallet
 {
     /// <summary>
-    /// Lógica interna para AddPokemonWindow.xaml
+    /// Lógica interna para TrainerInfoInput.xaml
     /// </summary>
-    public partial class AddPokemonWindow : Window
+    public partial class TrainerInfoInput : Window
     {
-        public AddPokemonWindow()
+        public TrainerInfoInput()
         {
             InitializeComponent();
         }
 
-        public void btn_Salvar(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
         }

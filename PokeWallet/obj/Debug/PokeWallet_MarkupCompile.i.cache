@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\ricar\source\repos\PokeWallet\PokeWallet\App.xaml
-2-1552500981
+5-1844521571
 
-12-1670375265
-13-1310406943
-AddPokemonWindow.xaml;MainWindow.xaml;
+161132002350
+14-1901166334
+MainWindow.xaml;PokemonInfoInput.xaml;PokemonUpdateInfoInput.xaml;TrainerInfoInput.xaml;TrainerWallet.xaml;
 
 True
 

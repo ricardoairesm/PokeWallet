@@ -11,61 +11,86 @@ namespace PokeWallet
     public class Game
     {
         private ObservableCollection<Pokemon> pokeList;
+        private ObservableCollection<Trainer> trainerList;
         private Trainer ash;
-        private ICommand add;
-        private ICommand remove;
-        private ICommand update;
+        private ICommand addPokemon;
+        private ICommand removePokemon;
+        private ICommand updatePokemon;
         private ICommand catchPokemon;
-        private Pokemon pokemonSelecionado;
+        private ICommand addTreinador;
+        private ICommand removeTreinador;
+        private ICommand updateTreinador;
+        private ICommand showTrainerWallet;
+        public Pokemon PokemonSelecionado { get; set; }
+        public Trainer TreinadorSelecionado { get; set; }
+        public int Id { get; set; }
         public Game()
         {
+            Id = 1;
+            TrainerList = new ObservableCollection<Trainer>();
             pokeList = new ObservableCollection<Pokemon>()
             {
-                new Pokemon("lucario",448,"steel"),
-                new Pokemon("bulbassauro",1,"grass"),
-                new Pokemon("Charizard",1,"grass"),
-                new Pokemon("bulbassauro",1,"grass"),
-                new Pokemon("bulbassauro",1,"grass"),
-                new Pokemon("bulbassauro",1,"grass"),
-                new Pokemon("bulbassauro",1,"grass"),
-                new Pokemon("bulbassauro",1,"grass"),
+                new Pokemon(6),
             };
-            Ash = new Trainer();
+            Ash = new Trainer(Id,"Ash");
+            TrainerList.Add(Ash);
+            Id++;
             IniciaComandos();
         }
 
-        public ObservableCollection<Pokemon> PokeList { get { return pokeList; }  set { pokeList = value; } }
-        public Trainer Ash { get {  return ash; }  set { ash = value; } }
-        public ICommand Add {  get { return add; }  set {  add = value; } }
-        public ICommand Remove { get { return remove; }  set { remove = value; } }
-        public ICommand Update { get { return update; }  set {  update = value; } }
-        public ICommand CatchPokemon {  get { return catchPokemon; }  set {  catchPokemon = value; } }
-        public Pokemon PokemonSelecionado { get { return pokemonSelecionado; }  set { pokemonSelecionado = value; } }
+        public ObservableCollection<Pokemon> PokeList { get { return pokeList; } private set { pokeList = value; } }
+        public Trainer Ash { get {  return ash; } private set { ash = value; } }
+        public ICommand AddPokemon {  get { return addPokemon; } private set { addPokemon = value; } }
+        public ICommand RemovePokemon { get { return removePokemon; }  private set { removePokemon = value; } }
+        public ICommand UpdatePokemon { get { return updatePokemon; }  private set { updatePokemon = value; } }
+        public ICommand CatchPokemon {  get { return catchPokemon; }  private set {  catchPokemon = value; } }
+        public ICommand AddTreinador { get { return addTreinador; } private set { addTreinador = value; } }
+        public ICommand RemoveTreinador { get { return removeTreinador; } private set { removeTreinador = value; } }
+        public ICommand UpdateTreinador { get { return updateTreinador; } private set { updateTreinador = value; } }
+        public ICommand ShowTrainerWallet { get { return showTrainerWallet; } private set { showTrainerWallet = value; } }
+        public ObservableCollection<Trainer> TrainerList { get { return trainerList; } private set {  trainerList = value; } }
 
 
         public void IniciaComandos()
         {
-            Add = new RelayCommand((object _) => {
+            AddPokemon = new RelayCommand((object Botao) => {
                 Pokemon newPokemon = new Pokemon();
-                AddPokemonWindow telaDeCadastro = new AddPokemonWindow();
-                telaDeCadastro.DataContext = newPokemon;
-                telaDeCadastro.ShowDialog();
-                pokeList.Add(new Pokemon(newPokemon.Name, newPokemon.Id, newPokemon.Type));
-                Ash.Catch(newPokemon.Id);
+                PokemonInfoInput telaDeCadastro = new PokemonInfoInput();
 
+                telaDeCadastro.DataContext = newPokemon;
+                bool? verifica = telaDeCadastro.ShowDialog();
+
+                if (verifica.HasValue && verifica.Value)
+                {
+                    pokeList.Add(new Pokemon(newPokemon.Id));
+                }
             });
-            Remove = new RelayCommand((object _) => {
+            RemovePokemon = new RelayCommand((object _) => {
                 pokeList.Remove(PokemonSelecionado);
             });
 
-            Update = new RelayCommand((object _) => {
-                AddPokemonWindow telaDeUpdate = new AddPokemonWindow();
+            UpdatePokemon = new RelayCommand((object _) => {
+                PokemonUpdateInfoInput telaDeUpdate = new PokemonUpdateInfoInput();
                 telaDeUpdate.DataContext = PokemonSelecionado;
                 telaDeUpdate.ShowDialog();
                 PokemonSelecionado.UpdateSprite();
             });
             CatchPokemon = new RelayCommand((object _) => {
-                Ash.Catch(PokemonSelecionado.Id);
+                TreinadorSelecionado.Catch(PokemonSelecionado.Id);
+            });
+            AddTreinador = new RelayCommand((object _) => {
+                Trainer newTrainer = new Trainer();
+                TrainerInfoInput telaDeCadastro = new TrainerInfoInput();
+                telaDeCadastro.DataContext = newTrainer;
+                telaDeCadastro.ShowDialog();
+                TrainerList.Add(new Trainer(Id,newTrainer.Name));
+                Id++;
+            });
+            ShowTrainerWallet = new RelayCommand((object _) =>
+            {
+                TrainerWallet telaTrainerWallet = new TrainerWallet();
+                telaTrainerWallet.DataContext = TreinadorSelecionado;
+                telaTrainerWallet.ShowDialog();
             });
 
         }
