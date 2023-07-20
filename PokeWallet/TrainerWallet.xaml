@@ -5,14 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PokeWallet"
         mc:Ignorable="d"
-        Title="TrainerWallet" Height="455" Width="461">
+        Title="TrainerWallet" Height="529" Width="535">
     <Grid HorizontalAlignment="Left" Width="672">
-        <ListView d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,0,0,6" ItemsSource="{Binding DisplayWallet}" HorizontalAlignment="Left" Width="377">
+        <ListView d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,0,0,6" ItemsSource="{Binding PokeList}" SelectedItem="{Binding PokemonSelecionado}" HorizontalAlignment="Left" Width="377">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn  Width="100"/>
+                    <GridViewColumn  Width="100" DisplayMemberBinding="{Binding Name}"/>
+                    <GridViewColumn  Width="50" DisplayMemberBinding="{Binding Type}"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Id}"/>
+                    <GridViewColumn Width="100">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Image Source="{Binding Sprite}" />
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
+        <Button Content="Remover do Time" Command="{Binding RemovePokemon}" HorizontalAlignment="Left" Margin="408,68,0,0" VerticalAlignment="Top" Height="46" Width="111"/>
+        <Button Content="Mudar Nome" Command="{Binding UpdatePokemon}" HorizontalAlignment="Left" Margin="408,171,0,0" VerticalAlignment="Top"  Height="50" Width="111"/>
     </Grid>
 </Window>

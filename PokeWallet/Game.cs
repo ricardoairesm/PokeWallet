@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,8 +35,14 @@ namespace PokeWallet
             };
             Ash = new Trainer(Id,"Ash");
             TrainerList.Add(Ash);
+            Ash.Catch(25);
             Id++;
             IniciaComandos();
+        }
+
+        public Game(int random)
+        {
+            pokeList = new ObservableCollection<Pokemon>();
         }
 
         public ObservableCollection<Pokemon> PokeList { get { return pokeList; } private set { pokeList = value; } }
@@ -50,6 +57,7 @@ namespace PokeWallet
         public ICommand ShowTrainerWallet { get { return showTrainerWallet; } private set { showTrainerWallet = value; } }
         public ObservableCollection<Trainer> TrainerList { get { return trainerList; } private set {  trainerList = value; } }
 
+   
 
         public void IniciaComandos()
         {
@@ -65,32 +73,60 @@ namespace PokeWallet
                     pokeList.Add(new Pokemon(newPokemon.Id));
                 }
             });
+
             RemovePokemon = new RelayCommand((object _) => {
                 pokeList.Remove(PokemonSelecionado);
             });
 
             UpdatePokemon = new RelayCommand((object _) => {
-                PokemonUpdateInfoInput telaDeUpdate = new PokemonUpdateInfoInput();
-                telaDeUpdate.DataContext = PokemonSelecionado;
-                telaDeUpdate.ShowDialog();
-                PokemonSelecionado.UpdateSprite();
+
+                if (PokemonSelecionado != null)
+                {
+                    PokemonUpdateInfoInput telaDeUpdate = new PokemonUpdateInfoInput();
+                    telaDeUpdate.DataContext = PokemonSelecionado;
+                    telaDeUpdate.ShowDialog();
+                }
+
             });
+
             CatchPokemon = new RelayCommand((object _) => {
-                TreinadorSelecionado.Catch(PokemonSelecionado.Id);
+
+                if (TreinadorSelecionado != null && PokemonSelecionado != null)
+                {
+                    TreinadorSelecionado.Catch(PokemonSelecionado.Id);
+                }
+
             });
+
             AddTreinador = new RelayCommand((object _) => {
+
                 Trainer newTrainer = new Trainer();
+
                 TrainerInfoInput telaDeCadastro = new TrainerInfoInput();
                 telaDeCadastro.DataContext = newTrainer;
                 telaDeCadastro.ShowDialog();
+
                 TrainerList.Add(new Trainer(Id,newTrainer.Name));
                 Id++;
+
             });
+
             ShowTrainerWallet = new RelayCommand((object _) =>
             {
-                TrainerWallet telaTrainerWallet = new TrainerWallet();
-                telaTrainerWallet.DataContext = TreinadorSelecionado;
-                telaTrainerWallet.ShowDialog();
+
+                if(TreinadorSelecionado != null)
+                {
+                    TrainerWalletVM screenContext = new TrainerWalletVM(TreinadorSelecionado);
+
+                    foreach(int id in TreinadorSelecionado.PokeWallet) 
+                    {
+                        screenContext.PokeList.Add(new Pokemon(id));
+                    }
+
+                    TrainerWallet telaTrainerWallet = new TrainerWallet();
+                    telaTrainerWallet.DataContext = screenContext;
+                    telaTrainerWallet.ShowDialog();
+                }
             });
 
         }

@@ -12,7 +12,7 @@
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Name}"  Width="100"/>
                     <GridViewColumn DisplayMemberBinding="{Binding Id}"  Width="100"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding DisplayPokeWallet}"  Width="100"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Metodo}"  Width="100"/>
                 </GridView>
             </ListView.View>
         </ListView>
