@@ -58,6 +58,7 @@
     <Compile Include="AddPokemonWindow.xaml.cs">
       <DependentUpon>AddPokemonWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Game.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="Trainer.cs" />
     <Page Include="AddPokemonWindow.xaml">

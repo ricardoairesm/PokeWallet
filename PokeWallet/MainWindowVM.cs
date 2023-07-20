@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -10,50 +11,29 @@ namespace PokeWallet
 {
     public class MainWindowVM
     {
-        public ObservableCollection<Pokemon> pokeList { get; set; }
-        public ObservableCollection<int> example { get; set; }
-        public Trainer Ash { get; set; }
-        public ICommand Add { get; private set; }
-        public ICommand Remove { get; private set; }
-        public ICommand Update { get; private set; }
-        public ICommand Catch { get; private set; }
-        public Pokemon PokemonSelecionado { get; set; }
+        private ICommand add;
+        private ICommand remove;
+        private ICommand update;
+        private ICommand catchPokemon;
+        public Game Pokemon;
+        public ObservableCollection<Pokemon> Pokedex { get; set; }
         public MainWindowVM()
         {
-            Ash = new Trainer();
-            example = new ObservableCollection<int>();
-            pokeList = new ObservableCollection<Pokemon>()
-            {
-                new Pokemon("lucario",448,"steel")
-            };
+            Pokemon = new Game();
+            Pokedex = Pokemon.PokeList;
             IniciaComandos();
         }
+        public ICommand Add { get { return add; } set { add = value; } }
+        public ICommand Remove { get { return remove; }  set { remove = value; } }
+        public ICommand Update { get { return update; } set { update = value; } }
+        public ICommand CatchPokemon { get { return catchPokemon; }  set { catchPokemon = value; } }
 
         public void IniciaComandos()
         {
-            Add = new RelayCommand((object _) => {
-                Pokemon newPokemon = new Pokemon();
-                AddPokemonWindow telaDeCadastro = new AddPokemonWindow();
-                telaDeCadastro.DataContext = newPokemon;
-                telaDeCadastro.ShowDialog();
-                pokeList.Add(new Pokemon(newPokemon.Name,newPokemon.Id,newPokemon.Type));
-                Ash.Catch(newPokemon.Id);
-
-            });
-            Remove = new RelayCommand((object _) => {
-                pokeList.Remove(PokemonSelecionado);
-            });
-
-            Update = new RelayCommand((object _) => {
-                AddPokemonWindow telaDeUpdate = new AddPokemonWindow();
-                telaDeUpdate.DataContext = PokemonSelecionado;
-                telaDeUpdate.ShowDialog();
-                PokemonSelecionado.UpdateSprite();
-            });
-            Catch = new RelayCommand((object _) => {
-                Ash.Catch(PokemonSelecionado.Id);
-            });
-
+            Add = Pokemon.Add;
+            Remove = Pokemon.Remove;
+            Update = Pokemon.Update;
+            CatchPokemon = Pokemon.CatchPokemon;
         }
     }
 }
