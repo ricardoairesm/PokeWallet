@@ -13,6 +13,7 @@ namespace PokeWallet
     public class Pokemon
     {
         private string name;
+        private int pokeId;
         private int id;
         private string type;
         private string sprite;
@@ -21,26 +22,39 @@ namespace PokeWallet
 
         }
 
-        public Pokemon(int id)
+        public Pokemon(int pokeId, int id)
         {
-            using(var client = new HttpClient())
+            using (var client = new HttpClient())
             {
-                var endpoint = new Uri($"https://pokeapi.co/api/v2/pokemon/{id}");
+                var endpoint = new Uri($"https://pokeapi.co/api/v2/pokemon/{pokeId}");
                 var result = client.GetAsync(endpoint).Result;
                 var json = result.Content.ReadAsStringAsync().Result;
                 var data = (JObject)JsonConvert.DeserializeObject(json);
 
+                var types = data.SelectToken("types").Value<JArray>();
+
                 this.name = data.SelectToken("name").Value<string>();
-                this.type = data.SelectToken("types[0].type.name").Value<string>();
-                this.sprite = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/{id}.png";
-                this.id = id;
+
+                if(types.LongCount() > 1)
+                {
+                    this.type = data.SelectToken("types[0].type.name").Value<string>() + " and " + data.SelectToken("types[1].type.name").Value<string>();
+                }
+
+                else
+                {
+                    this.type = data.SelectToken("types[0].type.name").Value<string>();
+                }
+
+                this.sprite = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/{pokeId}.png";
+                this.pokeId = pokeId;
+                this.Id = id;
             }
         }
 
         public Pokemon(string name, int id,string type)
         {
             this.name = name;
-            this.id = id;
+            this.pokeId = id;
             this.type = type;
             this.sprite = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/{id}.png";
         }
@@ -56,6 +70,11 @@ namespace PokeWallet
             set { name = value; }
         }
 
+        public int PokeId
+        {
+            get { return pokeId; }
+            set { pokeId = value; }
+        }
         public int Id
         {
             get { return id; }

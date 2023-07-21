@@ -30,6 +30,13 @@ namespace PokeWallet
 
         }
 
+        public void Release(int pokeId)
+        {
+            pokeWallet.Remove(pokeId);
+            Notifica("Metodo");
+
+        }
+
         public Trainer(int id, string name)
         {
             pokeWallet = new ObservableCollection<int>();
@@ -43,12 +50,17 @@ namespace PokeWallet
             {
             get
             {
-                string s = "" + PokeWallet[0];
-
-                for(int i = 1; i < PokeWallet.ToArray().Length; i++)
+                string s = "";
+                if(PokeWallet.ToArray().Length != 0)
                 {
-                    s += ", " + id;
+                    s += PokeWallet[0];
+
+                    for (int i = 1; i < PokeWallet.ToArray().Length; i++)
+                    {
+                        s += ", " + PokeWallet[i];
+                    }
                 }
+  
 
                 return s;
             }

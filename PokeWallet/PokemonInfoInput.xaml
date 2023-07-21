@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="PokemonInfoInput" Height="297" Width="323">
     <Grid Margin="0,0,0,-6">
-        <TextBox HorizontalAlignment="Center" Margin="0,77,0,0" TextWrapping="Wrap" Text="{Binding Id}" VerticalAlignment="Top" Width="120"/>
+        <TextBox HorizontalAlignment="Center" Margin="0,77,0,0" TextWrapping="Wrap" Text="{Binding PokeId}" VerticalAlignment="Top" Width="120"/>
         <Label Content="Id" HorizontalAlignment="Left" Margin="45,73,0,0" VerticalAlignment="Top"/>
         <Button Content="Salvar" HorizontalAlignment="Center" Margin="0,180,0,0" VerticalAlignment="Top" Click="Button_Click" Height="27" Width="79"/>
 

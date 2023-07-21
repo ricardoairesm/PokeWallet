@@ -5,28 +5,39 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PokeWallet"
         mc:Ignorable="d"
-        Title="MainWindow" Height="641" Width="935">
+        Title="MainWindow" Height="755" Width="1195">
     <Grid>
-        <ListView d:ItemsSource="{d:SampleData ItemCount=5}" Margin="494,0,0,6" SelectedItem="{Binding Pokemon.TreinadorSelecionado}" ItemsSource="{Binding Pokemon.TrainerList}">
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="Black"/>
+                <GradientStop Color="#FF6CCE1D" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="515*"/>
+            <ColumnDefinition Width="574*"/>
+        </Grid.ColumnDefinitions>
+        <ListView d:ItemsSource="{d:SampleData ItemCount=5}" Margin="278,82,0,6" SelectedItem="{Binding Pokemon.TreinadorSelecionado}" ItemsSource="{Binding Pokemon.TrainerList}" Grid.Column="1">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn DisplayMemberBinding="{Binding Name}"  Width="100"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Id}"  Width="100"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Metodo}"  Width="100"/>
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}"  Width="100"/>
+                    <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}"  Width="100"/>
+                    <GridViewColumn Header="Team" DisplayMemberBinding="{Binding Metodo}"  Width="100"/>
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button Command="{Binding Pokemon.AddPokemon}" Content="Add to Pokedex" HorizontalAlignment="Left" Margin="362,34,0,0" VerticalAlignment="Top" Height="35" Width="106"/>
-        <Button Command="{Binding Pokemon.RemovePokemon}" Content="Remove from Pokedex" HorizontalAlignment="Left" Margin="349,95,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.508,0.645" Height="36" Width="132"/>
-        <Button Command="{Binding Pokemon.UpdatePokemon}" Content="Update on Pokedex" HorizontalAlignment="Left" Margin="349,150,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.555,0.657" Height="32" Width="132"/>
-        <Button Command="{Binding Pokemon.CatchPokemon}" Content="Catch" HorizontalAlignment="Left" Margin="376,266,0,0" VerticalAlignment="Top" Height="31" Width="78"/>
-        <ListView d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,0,615,6" SelectedItem="{Binding Pokemon.PokemonSelecionado}" ItemsSource="{Binding Pokemon.PokeList}">
+        <Button Command="{Binding Pokemon.AddPokemon}" Content="Add to Pokedex" HorizontalAlignment="Left" Margin="77,109,0,0" VerticalAlignment="Top" Height="35" Width="106" Grid.Column="1"/>
+        <Button Command="{Binding Pokemon.RemovePokemon}" Content="Remove from Pokedex" HorizontalAlignment="Left" Margin="64,189,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.508,0.645" Height="36" Width="132" Grid.Column="1"/>
+        <Button Command="{Binding Pokemon.UpdatePokemon}" Content="Update on Pokedex" HorizontalAlignment="Left" Margin="64,260,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.555,0.657" Height="32" Width="132" Grid.Column="1"/>
+        <Button Command="{Binding Pokemon.CatchPokemon}" Content="Catch" HorizontalAlignment="Left" Margin="91,387,0,0" VerticalAlignment="Top" Height="31" Width="78" Grid.Column="1"/>
+        <ListView d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,82,0,6" SelectedItem="{Binding Pokemon.PokemonSelecionado}" ItemsSource="{Binding Pokemon.PokeList}" HorizontalAlignment="Left" Width="521">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn  Width="100" DisplayMemberBinding="{Binding Name}"/>
-                    <GridViewColumn  Width="50" DisplayMemberBinding="{Binding Type}"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Id}"/>
-                    <GridViewColumn Width="100">
+                    <GridViewColumn Header="Name" Width="100" DisplayMemberBinding="{Binding Name}"/>
+                    <GridViewColumn Header="Types" Width="150" DisplayMemberBinding="{Binding Type}"/>
+                    <GridViewColumn Header="PokeId" Width="60" DisplayMemberBinding="{Binding PokeId}"/>
+                    <GridViewColumn Header="Id" Width="60" DisplayMemberBinding="{Binding Id}"/>
+                    <GridViewColumn Width="100" Header="Sprite">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -38,8 +49,10 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button Command="{Binding Pokemon.AddTreinador}" Content="Add Trainer" HorizontalAlignment="Left" Margin="376,336,0,0" VerticalAlignment="Top" Height="31" Width="78"/>
-        <Button Command="{Binding Pokemon.ShowTrainerWallet}" Content="Show Wallet" HorizontalAlignment="Left" Margin="376,407,0,0" VerticalAlignment="Top" Height="33" Width="78"/>
+        <Button Command="{Binding Pokemon.AddTreinador}" Content="Add Trainer" HorizontalAlignment="Left" Margin="91,464,0,0" VerticalAlignment="Top" Height="31" Width="78" Grid.Column="1"/>
+        <Button Command="{Binding Pokemon.ShowTrainerWallet}" Content="Show Wallet" HorizontalAlignment="Left" Margin="91,613,0,0" VerticalAlignment="Top" Height="33" Width="78" Grid.Column="1"/>
+        <Button Command="{Binding Pokemon.RemoveTreinador}"  Content="Remove Trainer" HorizontalAlignment="Left" Margin="84,535,0,0" VerticalAlignment="Top" Height="30" Width="92" Grid.Column="1"/>
+        <Image Source="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/800px-International_Pok%C3%A9mon_logo.svg.png" HorizontalAlignment="Left" Height="62" Margin="40,10,0,0" VerticalAlignment="Top" Width="188"/>
 
 
     </Grid>

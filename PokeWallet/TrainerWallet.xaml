@@ -10,7 +10,7 @@
         <ListView d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,0,0,6" ItemsSource="{Binding PokeList}" SelectedItem="{Binding PokemonSelecionado}" HorizontalAlignment="Left" Width="377">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn  Width="100" DisplayMemberBinding="{Binding Name}"/>
+                    <GridViewColumn Header="Name" Width="100" DisplayMemberBinding="{Binding Name}"/>
                     <GridViewColumn  Width="50" DisplayMemberBinding="{Binding Type}"/>
                     <GridViewColumn DisplayMemberBinding="{Binding Id}"/>
                     <GridViewColumn Width="100">
@@ -25,7 +25,8 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button Content="Remover do Time" Command="{Binding RemovePokemon}" HorizontalAlignment="Left" Margin="408,68,0,0" VerticalAlignment="Top" Height="46" Width="111"/>
-        <Button Content="Mudar Nome" Command="{Binding UpdatePokemon}" HorizontalAlignment="Left" Margin="408,171,0,0" VerticalAlignment="Top"  Height="50" Width="111"/>
+        <Button Content="Remover do Time" Command="{Binding RemovePokemon}" HorizontalAlignment="Left" Margin="410,208,0,0" VerticalAlignment="Top" Height="46" Width="111"/>
+        <Label Content="Treinador" HorizontalAlignment="Left" Margin="432,32,0,0" VerticalAlignment="Top" Height="24" Width="68"/>
+        <Label Content="{Binding Owner.Name}" HorizontalAlignment="Left" Margin="447,75,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

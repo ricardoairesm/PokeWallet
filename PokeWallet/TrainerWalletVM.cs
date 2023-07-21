@@ -32,7 +32,7 @@ namespace PokeWallet
             RemovePokemon = new RelayCommand((object _) => {
                 if (PokemonSelecionado != null)
                 {
-                    Owner.PokeWallet.Remove(PokemonSelecionado.Id);
+                    Owner.Release(PokemonSelecionado.Id);
                     pokeList.Remove(PokemonSelecionado);
                 }
             });
