@@ -26,7 +26,7 @@ namespace PokeWallet
         public void Catch(int pokeId)
         {
             pokeWallet.Add(pokeId);
-            Notifica("Metodo");
+            Notifica(nameof(Metodo));
 
         }
 

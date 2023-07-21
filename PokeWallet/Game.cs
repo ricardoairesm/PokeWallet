@@ -44,7 +44,7 @@ namespace PokeWallet
                 new Pokemon(894,10),
                 new Pokemon(379,11),
                 new Pokemon(378,12),
-                new Pokemon(59,13),
+                new Pokemon(889,13),
             };
             IdForPokemons = 14;
             Ash = new Trainer(IdForTrainers,"Ash");
@@ -100,7 +100,7 @@ namespace PokeWallet
                 {
                     PokemonUpdateInfoInput telaDeUpdate = new PokemonUpdateInfoInput();
                     telaDeUpdate.DataContext = PokemonSelecionado;
-                    telaDeUpdate.ShowDialog();
+                    bool? verifica = telaDeUpdate.ShowDialog();
                 }
 
             });
