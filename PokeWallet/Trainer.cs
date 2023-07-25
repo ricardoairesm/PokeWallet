@@ -13,11 +13,28 @@ namespace PokeWallet
     {
         private ObservableCollection<int> pokeWallet;
         private string name;
+        private int age;
         private int id;
         public Trainer()
         {
 
         }
+        public Trainer(int id, string name, int age)
+        {
+            pokeWallet = new ObservableCollection<int>();
+            this.id = id;
+            this.name = name;
+            this.age = age;
+        }
+
+        public Trainer(Trainer trainer)
+        {
+            pokeWallet = new ObservableCollection<int>();
+            this.id = trainer.id;
+            this.name = trainer.name;
+            this.age = trainer.age;
+        }
+
 
         public Trainer ShallowCopy()
         {
@@ -49,15 +66,14 @@ namespace PokeWallet
             Notifica(nameof(Name));
 
         }
-        public Trainer(int id, string name)
+
+        public void UpdateAge(int age)
         {
-            pokeWallet = new ObservableCollection<int>();
-            this.id = id;
-            this.name = name;
-            PokeWallet = pokeWallet;
+            this.age = age;
+            Notifica(nameof(Age));
 
         }
- 
+
         public string PokeWalletString 
             {
             get
@@ -72,8 +88,6 @@ namespace PokeWallet
                         s += ", " + PokeWallet[i];
                     }
                 }
-  
-
                 return s;
             }
             set { }
@@ -82,5 +96,6 @@ namespace PokeWallet
         public ObservableCollection<int> PokeWallet { get { return pokeWallet; } set { pokeWallet = value; } }
         public string Name { get { return name; } set { name = value; } }
         public int Id { get { return id; } set { id = value; } }
+        public int Age { get { return age; } set { age = value; } }
     }
 }

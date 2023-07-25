@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace PokeWallet
@@ -31,32 +32,40 @@ namespace PokeWallet
 
         public Pokemon(string pokeName, int id)
         {
-            using (var client = new HttpClient())
+            try
             {
-                var endpoint = new Uri($"https://pokeapi.co/api/v2/pokemon/{pokeName}");
-                var result = client.GetAsync(endpoint).Result;
-                var json = result.Content.ReadAsStringAsync().Result;
-                var data = (JObject)JsonConvert.DeserializeObject(json);
-
-                var types = data.SelectToken("types").Value<JArray>();
-
-                this.name = pokeName;
-
-                if(types.LongCount() > 1)
+                using (var client = new HttpClient())
                 {
-                    this.type = data.SelectToken("types[0].type.name").Value<string>() + " and " + data.SelectToken("types[1].type.name").Value<string>();
-                }
+                    var endpoint = new Uri($"https://pokeapi.co/api/v2/pokemon/{pokeName}");
+                    var result = client.GetAsync(endpoint).Result;
+                    var json = result.Content.ReadAsStringAsync().Result;
+                    var data = (JObject)JsonConvert.DeserializeObject(json);
 
-                else
-                {
-                    this.type = data.SelectToken("types[0].type.name").Value<string>();
+                    var types = data.SelectToken("types").Value<JArray>();
+
+                    this.name = pokeName;
+
+                    if (types.LongCount() > 1)
+                    {
+                        this.type = data.SelectToken("types[0].type.name").Value<string>() + " and " + data.SelectToken("types[1].type.name").Value<string>();
+                    }
+
+                    else
+                    {
+                        this.type = data.SelectToken("types[0].type.name").Value<string>();
+                    }
+                    this.pokeId = data.SelectToken("id").Value<int>();
+                    int spriteId = this.pokeId;
+                    this.sprite = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/{spriteId}.png";
+
+                    this.Id = id;
                 }
-                this.pokeId = data.SelectToken("id").Value<int>();
-                int spriteId = this.pokeId;
-                this.sprite = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/{spriteId}.png";
-               
-                this.Id = id;
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
         }
 
         public Pokemon(string name, int id,string type)

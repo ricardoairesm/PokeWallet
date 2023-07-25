@@ -65,8 +65,6 @@ namespace PokeWallet.Infrastructure
                 MessageBox.Show(ex.Message);
                 return pokemon;
             }
-
-
         }
     }
 }

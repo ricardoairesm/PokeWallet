@@ -5,22 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PokeWallet"
         mc:Ignorable="d"
-        Title="TrainerWallet" Height="529" Width="718">
-    <Grid HorizontalAlignment="Center" Width="718">
+        Title="TrainerWallet" Height="617" Width="844">
+    <Grid HorizontalAlignment="Center" Width="844">
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                 <GradientStop Color="Black"/>
                 <GradientStop Color="#FF1CC81F" Offset="1"/>
             </LinearGradientBrush>
         </Grid.Background>
-        <ListView d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,0,0,6" ItemsSource="{Binding PokeList}" SelectedItem="{Binding PokemonSelecionado}" HorizontalAlignment="Left" Width="412">
+        <ListView d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,0,0,6" ItemsSource="{Binding PokeList}" SelectedItem="{Binding PokemonSelecionado}" HorizontalAlignment="Left" Width="516">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Name" Width="100" DisplayMemberBinding="{Binding Name}"/>
-                    <GridViewColumn Header="Name" Width="100" DisplayMemberBinding="{Binding Nickname}"/>
-                    <GridViewColumn  Width="150" DisplayMemberBinding="{Binding Type}"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Id}"/>
-                    <GridViewColumn Width="100">
+                    <GridViewColumn Header="Nickname" Width="100" DisplayMemberBinding="{Binding Nickname}"/>
+                    <GridViewColumn Header="Types" Width="150" DisplayMemberBinding="{Binding Type}"/>
+                    <GridViewColumn Header="PokeId" Width="50" DisplayMemberBinding="{Binding Id}"/>
+                    <GridViewColumn Width="100" Header="Sprite">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -32,9 +32,9 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button Content="Remover do Time" Command="{Binding RemovePokemon}" HorizontalAlignment="Left" Margin="457,153,0,0" VerticalAlignment="Top" Height="46" Width="111"/>
-        <Label Content="Treinador :" HorizontalAlignment="Left" Margin="432,32,0,0" VerticalAlignment="Top" Height="24" Width="68" Foreground="#FFF9F6F6"/>
-        <Label Content="{Binding Owner.Name}" HorizontalAlignment="Left" Margin="536,32,0,0" Height="24" VerticalAlignment="Top" RenderTransformOrigin="1.3,2.204" Foreground="#FFF9F6F6"/>
+        <Button Content="Remover do Time" Command="{Binding RemovePokemon}" HorizontalAlignment="Left" Margin="590,210,0,0" VerticalAlignment="Top" Height="46" Width="111"/>
+        <Label Content="Treinador :" HorizontalAlignment="Left" Margin="551,44,0,0" VerticalAlignment="Top" Height="24" Width="68" Foreground="#FFF9F6F6" RenderTransformOrigin="0.287,0.564"/>
+        <Label Content="{Binding Owner.Name}" HorizontalAlignment="Left" Margin="646,44,0,0" Height="24" VerticalAlignment="Top" RenderTransformOrigin="1.3,2.204" Foreground="#FFF9F6F6"/>
 
     </Grid>
 </Window>

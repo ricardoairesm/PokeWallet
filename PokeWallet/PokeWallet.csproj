@@ -111,6 +111,7 @@
     </ApplicationDefinition>
     <Compile Include="Infrastructure\DbConnection.cs" />
     <Compile Include="Infrastructure\PokemonRepository.cs" />
+    <Compile Include="Infrastructure\TrainerRepository.cs" />
     <Compile Include="Pokedex.cs" />
     <Compile Include="PokemonInfoInput.xaml.cs">
       <DependentUpon>PokemonInfoInput.xaml</DependentUpon>
