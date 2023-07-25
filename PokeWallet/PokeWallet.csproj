@@ -111,6 +111,7 @@
     </ApplicationDefinition>
     <Compile Include="Infrastructure\DbConnection.cs" />
     <Compile Include="Infrastructure\PokemonRepository.cs" />
+    <Compile Include="Infrastructure\PokeWalletRepository.cs" />
     <Compile Include="Infrastructure\TrainerRepository.cs" />
     <Compile Include="Pokedex.cs" />
     <Compile Include="PokemonInfoInput.xaml.cs">
@@ -119,6 +120,7 @@
     <Compile Include="PokemonUpdateInfoInput.xaml.cs">
       <DependentUpon>PokemonUpdateInfoInput.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PokeWalletDb.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="Trainer.cs" />
     <Compile Include="TrainerInfoInput.xaml.cs">

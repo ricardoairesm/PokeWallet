@@ -29,6 +29,25 @@ namespace PokeWallet.Infrastructure
             }
         }
 
+        public bool Remove(Pokemon pokemon, DbConnection DbConnection)
+        {
+            int result = 0;
+            try
+            {
+                DbConnection connection = DbConnection;
+
+                string query = $"DELETE FROM pokemon WHERE id = {pokemon.Id}";
+                result = connection.Connection.Execute(sql: query);
+
+                return result == 1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return result == 0;
+            }
+        }
+
         public bool Update(Pokemon pokemon, DbConnection DbConnection)
         {
             int result = 0;

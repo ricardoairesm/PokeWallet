@@ -89,11 +89,16 @@ namespace PokeWallet
         }
         private async void ObterTrainers()
         {
-            TrainerRepository repository = trainerRepository;
-            trainerDbList = repository.Get(dbConnection).OrderBy(trainer => trainer.Id);
+            TrainerRepository Trepository = trainerRepository;
+            PokeWalletRepository PWrepository = new PokeWalletRepository();
+            trainerDbList = Trepository.Get(dbConnection).OrderBy(trainer => trainer.Id);
             foreach (Trainer trainer in trainerDbList)
             {
                 TrainerList.Add(new Trainer(trainer));
+            }
+            foreach (Trainer trainer in TrainerList)
+            {
+                PWrepository.Get(trainer, DbConnection);
             }
         }
 
@@ -109,20 +114,25 @@ namespace PokeWallet
 
                 if (verifica.HasValue && verifica.Value)
                 {
-                    pokeList.Add(new Pokemon(Pokedex.pokeNameSelecionado, IdForPokemons));
+                    pokeList.Add(new Pokemon(Pokedex.pokeNameSelecionado, pokeList.ToArray().Length + 2));
                     repository.Add(new Pokemon(Pokedex.pokeNameSelecionado, IdForPokemons), DbConnection);
                 }
-
-                Pokedex.pokeNameSelecionado = null;
-                IdForPokemons++;
             });
 
             RemovePokemon = new RelayCommand((object _) => {
+
+                foreach(Trainer trainer in TrainerList)
+                {
+                    if (trainer.PokeWallet.Contains(PokemonSelecionado.Id))
+                    {
+                        MessageBox.Show("You can't remove pokemon that are on a team!", "Deleting pokemon in use");
+                        return;
+                    }
+                }
+                PokemonRepository repository = pokemonRepository;
+                repository.Remove(PokemonSelecionado, DbConnection);
                 pokeList.Remove(PokemonSelecionado);
-            }, (object _) => {
-                bool verifica = PokemonSelecionado != null;
-                return (verifica);
-            });
+            }, (object _) => PokemonSelecionado != null);
 
             UpdatePokemon = new RelayCommand((object _) => {
 
@@ -146,9 +156,9 @@ namespace PokeWallet
 
                 if (TreinadorSelecionado != null && PokemonSelecionado != null)
                 {
-                    if ( TreinadorSelecionado.PokeWallet.ToArray().Length == 6)
+                    if (TreinadorSelecionado.PokeWallet.ToArray().Length == 6)
                     {
-                        MessageBox.Show("You can't add more than 6 pokemon to a team","Max Team Size");
+                        MessageBox.Show("You can't add more than 6 pokemon to a team", "Max Team Size");
                         return;
                     }
                     if (TreinadorSelecionado.PokeWallet.Contains(PokemonSelecionado.Id))
@@ -156,43 +166,45 @@ namespace PokeWallet
                         MessageBox.Show("You can't add the same pokemon more than once to a team", "Repeated Pokemon");
                         return;
                     }
-                    if(TreinadorSelecionado != null && PokemonSelecionado != null)
+                    if (TreinadorSelecionado != null && PokemonSelecionado != null)
                     {
+                        PokeWalletRepository PWrepository = new PokeWalletRepository();
+                        PWrepository.Add(TreinadorSelecionado.Id, PokemonSelecionado.Id, DbConnection);
                         TreinadorSelecionado.Catch(PokemonSelecionado.Id);
                     }
                 }
 
-            }, (object _) => {
-                bool verifica = TreinadorSelecionado != null && PokemonSelecionado != null;
-                return (verifica);
-            });
+            }, (object _) => TreinadorSelecionado != null && PokemonSelecionado != null);
+
 
             AddTreinador = new RelayCommand((object _) => {
 
                 Trainer newTrainer = new Trainer();
+                TrainerRepository repository = trainerRepository;
 
                 TrainerInfoInput telaDeCadastro = new TrainerInfoInput();
                 telaDeCadastro.DataContext = newTrainer;
-                telaDeCadastro.ShowDialog();
+                bool? verifica = telaDeCadastro.ShowDialog();
 
-                TrainerList.Add(new Trainer(IdForTrainers, newTrainer.Name , newTrainer.Age));
-                IdForTrainers++;
-
+                if (verifica.HasValue && verifica.Value)
+                {
+                    TrainerList.Add(new Trainer(TrainerList.ToArray().Length + 1, newTrainer.Name, newTrainer.Age));
+                    repository.Add(new Trainer(TrainerList.ToArray().Length + 1, newTrainer.Name, newTrainer.Age), DbConnection);
+                }
             });
 
             RemoveTreinador = new RelayCommand((object _) => {
 
                 if (TreinadorSelecionado != null)
                 {
+                    TrainerRepository repository = trainerRepository;
+                    repository.Remove(TreinadorSelecionado, DbConnection);
+
                     trainerList.Remove(TreinadorSelecionado);
-                    IdForTrainers--;
                 }
 
+            }, (object _) => TreinadorSelecionado != null);
 
-            }, (object _) => {
-                bool verifica = TreinadorSelecionado != null;
-                return (verifica);
-            });
 
             UpdateTreinador = new RelayCommand((object _) => {
 
@@ -200,23 +212,24 @@ namespace PokeWallet
                 {
                     TrainerInfoInput telaDeUpdate = new TrainerInfoInput();
                     Trainer UpdateHolder = TreinadorSelecionado.ShallowCopy();
+                    TrainerRepository repository = trainerRepository;
+
                     telaDeUpdate.DataContext = UpdateHolder;
                     bool? verifica = telaDeUpdate.ShowDialog();
+
                     if (verifica.HasValue && verifica.Value)
                     {
                         TreinadorSelecionado.UpdateName(UpdateHolder.Name);
                         TreinadorSelecionado.UpdateAge(UpdateHolder.Age);
+                        repository.Update(TreinadorSelecionado, DbConnection);
                     }
                 }
 
-            }, (object _) => {
-                bool verifica = TreinadorSelecionado != null;
-                return (verifica);
-            });
+            }, (object _) => TreinadorSelecionado != null);
+
 
             ShowTrainerWallet = new RelayCommand((object _) =>
             {
-
                 if (TreinadorSelecionado != null)
                 {
                     TrainerWalletVM screenContext = new TrainerWalletVM(TreinadorSelecionado);
@@ -229,15 +242,11 @@ namespace PokeWallet
                         }
 
                     }
-
                     TrainerWallet telaTrainerWallet = new TrainerWallet();
                     telaTrainerWallet.DataContext = screenContext;
                     telaTrainerWallet.ShowDialog();
                 }
-            }, (object _) => {
-                bool verifica = TreinadorSelecionado != null;
-                return (verifica);
-            });
+            }, (object _) => TreinadorSelecionado != null);
 
         }
     }
