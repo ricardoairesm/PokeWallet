@@ -18,6 +18,12 @@ namespace PokeWallet
         {
 
         }
+
+        public Trainer ShallowCopy()
+        {
+            return (Trainer)this.MemberwiseClone();
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         private void Notifica(string propertyName)
         {
@@ -26,17 +32,23 @@ namespace PokeWallet
         public void Catch(int pokeId)
         {
             pokeWallet.Add(pokeId);
-            Notifica(nameof(Metodo));
+            Notifica(nameof(PokeWalletString));
 
         }
 
         public void Release(int pokeId)
         {
             pokeWallet.Remove(pokeId);
-            Notifica("Metodo");
+            Notifica(nameof(PokeWalletString));
 
         }
 
+        public void UpdateName(string name)
+        {
+            this.name = name;
+            Notifica(nameof(Name));
+
+        }
         public Trainer(int id, string name)
         {
             pokeWallet = new ObservableCollection<int>();
@@ -46,7 +58,7 @@ namespace PokeWallet
 
         }
  
-        public string Metodo 
+        public string PokeWalletString 
             {
             get
             {

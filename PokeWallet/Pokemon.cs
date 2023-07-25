@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -10,30 +11,36 @@ using System.Windows.Controls;
 
 namespace PokeWallet
 {
-    public class Pokemon
+    public class Pokemon : INotifyPropertyChanged
     {
         private string name;
         private int pokeId;
         private int id;
         private string type;
         private string sprite;
+        private string nickname;
         public Pokemon()
         { 
 
         }
+        public Pokemon ShallowCopy()
+        {
+            return (Pokemon)this.MemberwiseClone();
+        }
 
-        public Pokemon(int pokeId, int id)
+
+        public Pokemon(string pokeName, int id)
         {
             using (var client = new HttpClient())
             {
-                var endpoint = new Uri($"https://pokeapi.co/api/v2/pokemon/{pokeId}");
+                var endpoint = new Uri($"https://pokeapi.co/api/v2/pokemon/{pokeName}");
                 var result = client.GetAsync(endpoint).Result;
                 var json = result.Content.ReadAsStringAsync().Result;
                 var data = (JObject)JsonConvert.DeserializeObject(json);
 
                 var types = data.SelectToken("types").Value<JArray>();
 
-                this.name = data.SelectToken("name").Value<string>();
+                this.name = pokeName;
 
                 if(types.LongCount() > 1)
                 {
@@ -44,9 +51,10 @@ namespace PokeWallet
                 {
                     this.type = data.SelectToken("types[0].type.name").Value<string>();
                 }
-
-                this.sprite = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/{pokeId}.png";
-                this.pokeId = pokeId;
+                this.pokeId = data.SelectToken("id").Value<int>();
+                int spriteId = this.pokeId;
+                this.sprite = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/{spriteId}.png";
+               
                 this.Id = id;
             }
         }
@@ -59,9 +67,10 @@ namespace PokeWallet
             this.sprite = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/{id}.png";
         }
 
-        public void UpdateSprite()
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void Notifica(string propertyName)
         {
-            this.sprite = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/{this.Id}.png";
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public string Name
@@ -92,6 +101,19 @@ namespace PokeWallet
             get { return sprite; }
             set { sprite = value; }
         }
-        
+
+        public string Nickname
+        {
+            get { return nickname; }
+            set { nickname = value; }
+        }
+
+        public void UpdateNickname(string nickname)
+        {
+            this.nickname = nickname;
+            Notifica(nameof(Nickname));
+
+        }
+
     }
 }
