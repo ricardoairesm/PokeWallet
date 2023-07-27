@@ -110,11 +110,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Infrastructure\DbConnection.cs" />
-    <Compile Include="Infrastructure\PokemonRepository.cs" />
-    <Compile Include="Infrastructure\PokeWalletRepository.cs" />
-    <Compile Include="Infrastructure\TrainerRepository.cs" />
+    <Compile Include="Infrastructure\IDbConnection.cs" />
+    <Compile Include="Infrastructure\IRepository.cs" />
+    <Compile Include="Infrastructure\PostgresConnection.cs" />
     <Compile Include="Models\Pokedex.cs" />
+    <Compile Include="Models\RelayCommandsIniciator.cs" />
     <Compile Include="Views\PokemonInfoInput.xaml.cs">
       <DependentUpon>PokemonInfoInput.xaml</DependentUpon>
     </Compile>

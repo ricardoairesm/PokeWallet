@@ -21,10 +21,7 @@ namespace PokeWallet
         private IOrderedEnumerable<Pokemon> pokemonDbList;
         private IOrderedEnumerable<Trainer> trainerDbList;
         private ObservableCollection<Trainer> trainerList;
-        private DbConnection dbConnection;
-        private PokemonRepository pokemonRepository;
-        private TrainerRepository trainerRepository;
-        private PokeWalletRepository pokeWalletRepository;
+        private IDbConnection dbConnection;
         private ICommand addPokemon;
         private ICommand removePokemon;
         private ICommand updatePokemon;
@@ -39,10 +36,7 @@ namespace PokeWallet
         public int IdForPokemons { get; set; }
         public MainWindowVM()
         {
-            dbConnection = new DbConnection();
-            pokemonRepository = new PokemonRepository();
-            trainerRepository = new TrainerRepository();
-            pokeWalletRepository = new PokeWalletRepository();
+            dbConnection = new PostgresConnection();
             pokedex = new Pokedex();
             TrainerList = new ObservableCollection<Trainer>();
             pokeList = new BindingList<Pokemon>();
@@ -60,10 +54,7 @@ namespace PokeWallet
         public Pokedex Pokedex { get { return pokedex; } private set { pokedex = value; } }
         public IOrderedEnumerable<Pokemon> PokemonDbList { get { return pokemonDbList; } private set { pokemonDbList = value; } }
         public IOrderedEnumerable<Trainer> TrainerDbList { get { return trainerDbList; } private set { trainerDbList = value; } }
-        public DbConnection DbConnection { get { return dbConnection; } private set { dbConnection = value; } }
-        public PokemonRepository PokemonRepository { get { return pokemonRepository; } private set { pokemonRepository = value; } }
-        public TrainerRepository TrainerRepository { get { return trainerRepository; } private set { trainerRepository = value; } }
-        public PokeWalletRepository PokeWalletRepository { get { return pokeWalletRepository; } }
+        public IDbConnection DbConnection { get { return dbConnection; } private set { dbConnection = value; } }
         public ICommand AddPokemon { get { return addPokemon; } private set { addPokemon = value; } }
         public ICommand RemovePokemon { get { return removePokemon; } private set { removePokemon = value; } }
         public ICommand UpdatePokemon { get { return updatePokemon; } private set { updatePokemon = value; } }
@@ -75,16 +66,15 @@ namespace PokeWallet
         public ObservableCollection<Trainer> TrainerList { get { return trainerList; } private set { trainerList = value; } }
 
 
-        private async void ObterPokemons()
+        public void ObterPokemons()
         {
             try
             {
-                PokemonRepository repository = pokemonRepository;
-                pokemonDbList = repository.Get(dbConnection).OrderBy(pokemon => pokemon.Id);
+                pokemonDbList = dbConnection.GetPokemon().OrderBy(pokemon => pokemon.Id);
 
                 foreach (Pokemon pokemon in pokemonDbList)
                 {
-                    if(pokemon == pokemonDbList.Last())
+                    if (pokemon == pokemonDbList.Last())
                     {
                         IdForPokemons = pokemon.Id + 1;
                     }
@@ -101,9 +91,8 @@ namespace PokeWallet
         {
             try 
             {
-                TrainerRepository Trepository = trainerRepository;
-                PokeWalletRepository PWrepository = new PokeWalletRepository();
-                trainerDbList = Trepository.Get(dbConnection).OrderBy(trainer => trainer.Id);
+                
+                trainerDbList = dbConnection.GetTrainers().OrderBy(trainer => trainer.Id);
 
                 foreach (Trainer trainer in trainerDbList)
                 {
@@ -116,7 +105,7 @@ namespace PokeWallet
 
                 foreach (Trainer trainer in TrainerList)
                 {
-                    PWrepository.Get(trainer, DbConnection);
+                    dbConnection.GetPokeWallet(trainer);
                 }
             }
             catch (Exception ex)
@@ -129,20 +118,19 @@ namespace PokeWallet
 
         public void IniciaComandos()
         {
-            //AddPokemon = new RelayCommand((object Botao) => {
-              //  PokemonInfoInput telaDeCadastro = new PokemonInfoInput();
-                //PokemonRepository repository = pokemonRepository;
+            AddPokemon = new RelayCommand((object Botao) => {
+                PokemonInfoInput telaDeCadastro = new PokemonInfoInput();
 
-                //telaDeCadastro.DataContext = Pokedex;
-                //bool? verifica = telaDeCadastro.ShowDialog();
+                telaDeCadastro.DataContext = Pokedex;
+                bool? verifica = telaDeCadastro.ShowDialog();
 
-               // if (verifica.HasValue && verifica.Value)
-                //{
-                  //  pokeList.Add(new Pokemon(Pokedex.pokeNameSelecionado, IdForPokemons));
-                    //repository.Add(new Pokemon(Pokedex.pokeNameSelecionado, IdForPokemons), DbConnection);
-                    //IdForPokemons++;
-               // }
-            //});
+                if (verifica.HasValue && verifica.Value)
+                {
+                    pokeList.Add(new Pokemon(Pokedex.pokeNameSelecionado, IdForPokemons));
+                    dbConnection.AddPokemon(new Pokemon(Pokedex.pokeNameSelecionado, IdForPokemons));
+                    IdForPokemons++;
+                }
+            });
 
             RemovePokemon = new RelayCommand((object _) => {
 
@@ -155,9 +143,7 @@ namespace PokeWallet
                     }
                 }
 
-                PokemonRepository repository = pokemonRepository;
-
-                repository.Remove(PokemonSelecionado, DbConnection);
+                dbConnection.RemovePokemon(PokemonSelecionado);
                 pokeList.Remove(PokemonSelecionado);
 
             }, (object _) => PokemonSelecionado != null);
@@ -167,7 +153,6 @@ namespace PokeWallet
                 if (PokemonSelecionado != null)
                 {
                     PokemonUpdateInfoInput telaDeUpdate = new PokemonUpdateInfoInput();
-                    PokemonRepository repository = pokemonRepository;
                     Pokemon UpdateHolder = PokemonSelecionado.ShallowCopy();
 
                     telaDeUpdate.DataContext = UpdateHolder;
@@ -176,7 +161,7 @@ namespace PokeWallet
                     if (verifica.HasValue && verifica.Value)
                     {
                         PokemonSelecionado.UpdateNickname(UpdateHolder.Nickname);
-                        repository.Update(PokemonSelecionado, DbConnection);
+                        dbConnection.UpdatePokemon(PokemonSelecionado);
                     }
                 }
 
@@ -198,8 +183,7 @@ namespace PokeWallet
                     }
                     if (TreinadorSelecionado != null && PokemonSelecionado != null)
                     {
-                        PokeWalletRepository PWrepository = new PokeWalletRepository();
-                        PWrepository.Add(TreinadorSelecionado.Id, PokemonSelecionado.Id, DbConnection);
+                        dbConnection.AddPokeWalletInstance(TreinadorSelecionado.Id, PokemonSelecionado.Id);
                         TreinadorSelecionado.Catch(PokemonSelecionado.Id);
                     }
                 }
@@ -210,7 +194,6 @@ namespace PokeWallet
             AddTreinador = new RelayCommand((object _) => {
 
                 Trainer newTrainer = new Trainer();
-                TrainerRepository repository = trainerRepository;
 
                 TrainerInfoInput telaDeCadastro = new TrainerInfoInput();
                 telaDeCadastro.DataContext = newTrainer;
@@ -219,7 +202,7 @@ namespace PokeWallet
                 if (verifica.HasValue && verifica.Value)
                 {
                     TrainerList.Add(new Trainer(IdForTrainers, newTrainer.Name, newTrainer.Age));
-                    repository.Add(new Trainer(IdForTrainers, newTrainer.Name, newTrainer.Age), DbConnection);
+                    dbConnection.AddTrainer(new Trainer(IdForTrainers, newTrainer.Name, newTrainer.Age));
                     IdForTrainers++;
                 }
             });
@@ -228,25 +211,20 @@ namespace PokeWallet
 
                 if (TreinadorSelecionado != null)
                 {
-                    TrainerRepository Trepository = trainerRepository;
-                    PokeWalletRepository PWrepository = pokeWalletRepository;
                     if (TreinadorSelecionado.PokeWallet.Count() > 0)
                     {
                         DialogResult dr = MessageBox.Show("Do you want to delete this trainer and his team?","Delete Trainer", MessageBoxButtons.YesNo);
                         switch (dr)
                         {
                             case DialogResult.Yes:
-                                PWrepository.ClearTrainerWallet(TreinadorSelecionado.Id, dbConnection);
-                                Trepository.Remove(TreinadorSelecionado, DbConnection);
+                                dbConnection.ClearTrainerPokeWallet(TreinadorSelecionado.Id);
+                                dbConnection.RemoveTrainer(TreinadorSelecionado);
                                 trainerList.Remove(TreinadorSelecionado);
                                 break;
                             case DialogResult.No:
                                 break;
                         }
                     }
-                  
-                    //Trepository.Remove(TreinadorSelecionado, DbConnection);
-                    //trainerList.Remove(TreinadorSelecionado);
                 }
 
             }, (object _) => TreinadorSelecionado != null);
@@ -258,7 +236,6 @@ namespace PokeWallet
                 {
                     TrainerInfoInput telaDeUpdate = new TrainerInfoInput();
                     Trainer UpdateHolder = TreinadorSelecionado.ShallowCopy();
-                    TrainerRepository repository = trainerRepository;
 
                     telaDeUpdate.DataContext = UpdateHolder;
                     bool? verifica = telaDeUpdate.ShowDialog();
@@ -267,7 +244,7 @@ namespace PokeWallet
                     {
                         TreinadorSelecionado.UpdateName(UpdateHolder.Name);
                         TreinadorSelecionado.UpdateAge(UpdateHolder.Age);
-                        repository.Update(TreinadorSelecionado, DbConnection);
+                        dbConnection.UpdateTrainer(TreinadorSelecionado);
                     }
                 }
 
