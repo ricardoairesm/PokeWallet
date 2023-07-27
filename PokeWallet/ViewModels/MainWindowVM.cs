@@ -8,7 +8,9 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace PokeWallet
 {
@@ -19,10 +21,10 @@ namespace PokeWallet
         private IOrderedEnumerable<Pokemon> pokemonDbList;
         private IOrderedEnumerable<Trainer> trainerDbList;
         private ObservableCollection<Trainer> trainerList;
-        private Trainer ash;
         private DbConnection dbConnection;
         private PokemonRepository pokemonRepository;
         private TrainerRepository trainerRepository;
+        private PokeWalletRepository pokeWalletRepository;
         private ICommand addPokemon;
         private ICommand removePokemon;
         private ICommand updatePokemon;
@@ -40,17 +42,12 @@ namespace PokeWallet
             dbConnection = new DbConnection();
             pokemonRepository = new PokemonRepository();
             trainerRepository = new TrainerRepository();
+            pokeWalletRepository = new PokeWalletRepository();
             pokedex = new Pokedex();
-            IdForTrainers = 1;
             TrainerList = new ObservableCollection<Trainer>();
             pokeList = new BindingList<Pokemon>();
             ObterPokemons();
             ObterTrainers();
-            IdForPokemons = 14;
-            //Ash = new Trainer(IdForTrainers, "Ash", 15);
-            //TrainerList.Add(Ash);
-            //Ash.Catch(2);
-            IdForTrainers++;
             IniciaComandos();
         }
 
@@ -63,10 +60,10 @@ namespace PokeWallet
         public Pokedex Pokedex { get { return pokedex; } private set { pokedex = value; } }
         public IOrderedEnumerable<Pokemon> PokemonDbList { get { return pokemonDbList; } private set { pokemonDbList = value; } }
         public IOrderedEnumerable<Trainer> TrainerDbList { get { return trainerDbList; } private set { trainerDbList = value; } }
-        public Trainer Ash { get { return ash; } private set { ash = value; } }
         public DbConnection DbConnection { get { return dbConnection; } private set { dbConnection = value; } }
         public PokemonRepository PokemonRepository { get { return pokemonRepository; } private set { pokemonRepository = value; } }
         public TrainerRepository TrainerRepository { get { return trainerRepository; } private set { trainerRepository = value; } }
+        public PokeWalletRepository PokeWalletRepository { get { return pokeWalletRepository; } }
         public ICommand AddPokemon { get { return addPokemon; } private set { addPokemon = value; } }
         public ICommand RemovePokemon { get { return removePokemon; } private set { removePokemon = value; } }
         public ICommand UpdatePokemon { get { return updatePokemon; } private set { updatePokemon = value; } }
@@ -80,44 +77,72 @@ namespace PokeWallet
 
         private async void ObterPokemons()
         {
-            PokemonRepository repository = pokemonRepository;
-            pokemonDbList = repository.Get(dbConnection).OrderBy(pokemon => pokemon.Id);
-            foreach(Pokemon pokemon in pokemonDbList)
+            try
             {
-                PokeList.Add(pokemon);
+                PokemonRepository repository = pokemonRepository;
+                pokemonDbList = repository.Get(dbConnection).OrderBy(pokemon => pokemon.Id);
+
+                foreach (Pokemon pokemon in pokemonDbList)
+                {
+                    if(pokemon == pokemonDbList.Last())
+                    {
+                        IdForPokemons = pokemon.Id + 1;
+                    }
+                    PokeList.Add(pokemon);
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
         }
         private async void ObterTrainers()
         {
-            TrainerRepository Trepository = trainerRepository;
-            PokeWalletRepository PWrepository = new PokeWalletRepository();
-            trainerDbList = Trepository.Get(dbConnection).OrderBy(trainer => trainer.Id);
-            foreach (Trainer trainer in trainerDbList)
+            try 
             {
-                TrainerList.Add(new Trainer(trainer));
+                TrainerRepository Trepository = trainerRepository;
+                PokeWalletRepository PWrepository = new PokeWalletRepository();
+                trainerDbList = Trepository.Get(dbConnection).OrderBy(trainer => trainer.Id);
+
+                foreach (Trainer trainer in trainerDbList)
+                {
+                    TrainerList.Add(new Trainer(trainer));
+                    if(trainer == trainerDbList.Last())
+                    {
+                        IdForTrainers = trainer.Id + 1;
+                    }
+                }
+
+                foreach (Trainer trainer in TrainerList)
+                {
+                    PWrepository.Get(trainer, DbConnection);
+                }
             }
-            foreach (Trainer trainer in TrainerList)
+            catch (Exception ex)
             {
-                PWrepository.Get(trainer, DbConnection);
+                MessageBox.Show(ex.Message);
             }
+
         }
 
 
         public void IniciaComandos()
         {
-            AddPokemon = new RelayCommand((object Botao) => {
-                PokemonInfoInput telaDeCadastro = new PokemonInfoInput();
-                PokemonRepository repository = pokemonRepository;
+            //AddPokemon = new RelayCommand((object Botao) => {
+              //  PokemonInfoInput telaDeCadastro = new PokemonInfoInput();
+                //PokemonRepository repository = pokemonRepository;
 
-                telaDeCadastro.DataContext = Pokedex;
-                bool? verifica = telaDeCadastro.ShowDialog();
+                //telaDeCadastro.DataContext = Pokedex;
+                //bool? verifica = telaDeCadastro.ShowDialog();
 
-                if (verifica.HasValue && verifica.Value)
-                {
-                    pokeList.Add(new Pokemon(Pokedex.pokeNameSelecionado, pokeList.ToArray().Length + 2));
-                    repository.Add(new Pokemon(Pokedex.pokeNameSelecionado, IdForPokemons), DbConnection);
-                }
-            });
+               // if (verifica.HasValue && verifica.Value)
+                //{
+                  //  pokeList.Add(new Pokemon(Pokedex.pokeNameSelecionado, IdForPokemons));
+                    //repository.Add(new Pokemon(Pokedex.pokeNameSelecionado, IdForPokemons), DbConnection);
+                    //IdForPokemons++;
+               // }
+            //});
 
             RemovePokemon = new RelayCommand((object _) => {
 
@@ -129,9 +154,12 @@ namespace PokeWallet
                         return;
                     }
                 }
+
                 PokemonRepository repository = pokemonRepository;
+
                 repository.Remove(PokemonSelecionado, DbConnection);
                 pokeList.Remove(PokemonSelecionado);
+
             }, (object _) => PokemonSelecionado != null);
 
             UpdatePokemon = new RelayCommand((object _) => {
@@ -141,8 +169,10 @@ namespace PokeWallet
                     PokemonUpdateInfoInput telaDeUpdate = new PokemonUpdateInfoInput();
                     PokemonRepository repository = pokemonRepository;
                     Pokemon UpdateHolder = PokemonSelecionado.ShallowCopy();
+
                     telaDeUpdate.DataContext = UpdateHolder;
                     bool? verifica = telaDeUpdate.ShowDialog();
+
                     if (verifica.HasValue && verifica.Value)
                     {
                         PokemonSelecionado.UpdateNickname(UpdateHolder.Nickname);
@@ -188,8 +218,9 @@ namespace PokeWallet
 
                 if (verifica.HasValue && verifica.Value)
                 {
-                    TrainerList.Add(new Trainer(TrainerList.ToArray().Length + 1, newTrainer.Name, newTrainer.Age));
-                    repository.Add(new Trainer(TrainerList.ToArray().Length + 1, newTrainer.Name, newTrainer.Age), DbConnection);
+                    TrainerList.Add(new Trainer(IdForTrainers, newTrainer.Name, newTrainer.Age));
+                    repository.Add(new Trainer(IdForTrainers, newTrainer.Name, newTrainer.Age), DbConnection);
+                    IdForTrainers++;
                 }
             });
 
@@ -197,10 +228,25 @@ namespace PokeWallet
 
                 if (TreinadorSelecionado != null)
                 {
-                    TrainerRepository repository = trainerRepository;
-                    repository.Remove(TreinadorSelecionado, DbConnection);
-
-                    trainerList.Remove(TreinadorSelecionado);
+                    TrainerRepository Trepository = trainerRepository;
+                    PokeWalletRepository PWrepository = pokeWalletRepository;
+                    if (TreinadorSelecionado.PokeWallet.Count() > 0)
+                    {
+                        DialogResult dr = MessageBox.Show("Do you want to delete this trainer and his team?","Delete Trainer", MessageBoxButtons.YesNo);
+                        switch (dr)
+                        {
+                            case DialogResult.Yes:
+                                PWrepository.ClearTrainerWallet(TreinadorSelecionado.Id, dbConnection);
+                                Trepository.Remove(TreinadorSelecionado, DbConnection);
+                                trainerList.Remove(TreinadorSelecionado);
+                                break;
+                            case DialogResult.No:
+                                break;
+                        }
+                    }
+                  
+                    //Trepository.Remove(TreinadorSelecionado, DbConnection);
+                    //trainerList.Remove(TreinadorSelecionado);
                 }
 
             }, (object _) => TreinadorSelecionado != null);

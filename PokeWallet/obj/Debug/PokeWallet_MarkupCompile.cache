@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\ricardo.barbosa\Documents\GitHub\PokeWallet\PokeWallet\App.xaml
-5-1844521571
+5288850441
 
-20-544185922
-322020848412
-MainWindow.xaml;PokemonInfoInput.xaml;PokemonUpdateInfoInput.xaml;TrainerInfoInput.xaml;TrainerWallet.xaml;
+20-582776924
+331319299739
+MainWindow.xaml;Views\PokemonInfoInput.xaml;Views\PokemonUpdateInfoInput.xaml;Views\TrainerInfoInput.xaml;Views\TrainerWallet.xaml;
 
 False
 

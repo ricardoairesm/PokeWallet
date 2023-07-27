@@ -75,7 +75,7 @@ namespace PokeWallet.Infrastructure
             {
                 DbConnection connection = DbConnection;
                 string query = @"SELECT * FROM pokemon";
-                var pokemons = connection.Connection.Query<Pokemon>(sql: query);
+                var pokemons = connection.Connection.Query<Pokemon>(sql: query).OrderBy(p => p.Id);
 
                 return pokemons.ToList();
             }

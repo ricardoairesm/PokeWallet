@@ -47,5 +47,43 @@ namespace PokeWallet.Infrastructure
                 MessageBox.Show(ex.Message);
             }
         }
+
+        public bool Remove(int trainerId, int pokemonId, DbConnection DbConnection)
+        {
+            int result = 0;
+            try
+            {
+                DbConnection connection = DbConnection;
+
+                string query = $@"DELETE FROM ""pokeWallet"" WHERE ""pokemonId"" = {pokemonId} AND ""trainerId"" = {trainerId}";
+                result = connection.Connection.Execute(sql: query);
+
+                return result == 1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return result == 0;
+            }
+        }
+
+        public bool ClearTrainerWallet(int trainerId,DbConnection dbConnection)
+        {
+            int result = 0;
+            try
+            {
+                DbConnection connection = dbConnection;
+
+                string query = $@"DELETE FROM ""pokeWallet"" WHERE ""trainerId"" = {trainerId}";
+                result = connection.Connection.Execute(sql: query);
+
+                return result == 1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return result == 0;
+            }
+        }
     }
 }
