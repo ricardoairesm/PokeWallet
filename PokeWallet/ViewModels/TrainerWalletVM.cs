@@ -14,13 +14,15 @@ namespace PokeWallet
     {
         public Trainer Owner { get; set; }
         private ObservableCollection<Pokemon> pokeList;
+        private IDbDataAccess dbDataAccess;
         private ICommand removePokemon;
         private PostgresConnection connection;
         public Pokemon PokemonSelecionado { get; set; }
         public TrainerWalletVM(Trainer TreinadorSelecionado)
         {
+            dbDataAccess = new DbDataAccess();
             pokeList = new ObservableCollection<Pokemon>();
-            connection = new PostgresConnection();
+            connection = new PostgresConnection(dbDataAccess);
             Owner = TreinadorSelecionado;
             IniciaComandos();
         }

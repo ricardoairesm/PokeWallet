@@ -21,7 +21,8 @@ namespace PokeWallet
         private IOrderedEnumerable<Pokemon> pokemonDbList;
         private IOrderedEnumerable<Trainer> trainerDbList;
         private ObservableCollection<Trainer> trainerList;
-        private IDbConnection dbConnection;
+        private IPostgresController dbConnection;
+        private IDbDataAccess dbDataAccess;
         private ICommand addPokemon;
         private ICommand removePokemon;
         private ICommand updatePokemon;
@@ -36,7 +37,8 @@ namespace PokeWallet
         public int IdForPokemons { get; set; }
         public MainWindowVM()
         {
-            dbConnection = new PostgresConnection();
+            dbDataAccess = new DbDataAccess();
+            dbConnection = new PostgresConnection(dbDataAccess);
             pokedex = new Pokedex();
             TrainerList = new ObservableCollection<Trainer>();
             pokeList = new BindingList<Pokemon>();
@@ -54,7 +56,7 @@ namespace PokeWallet
         public Pokedex Pokedex { get { return pokedex; } private set { pokedex = value; } }
         public IOrderedEnumerable<Pokemon> PokemonDbList { get { return pokemonDbList; } private set { pokemonDbList = value; } }
         public IOrderedEnumerable<Trainer> TrainerDbList { get { return trainerDbList; } private set { trainerDbList = value; } }
-        public IDbConnection DbConnection { get { return dbConnection; } private set { dbConnection = value; } }
+        public IPostgresController DbConnection { get { return dbConnection; } private set { dbConnection = value; } }
         public ICommand AddPokemon { get { return addPokemon; } private set { addPokemon = value; } }
         public ICommand RemovePokemon { get { return removePokemon; } private set { removePokemon = value; } }
         public ICommand UpdatePokemon { get { return updatePokemon; } private set { updatePokemon = value; } }

@@ -9,78 +9,52 @@ using System.Windows;
 
 namespace PokeWallet.Infrastructure
 {
-    public class PostgresConnection : IDbConnection
+    public class PostgresConnection:IPostgresController
     {
-        public NpgsqlConnection Connection { get; set; }
-        public PostgresConnection()
+        IDbDataAccess _database;
+        public PostgresConnection(IDbDataAccess database)
         {
-            try
-            {
-                Connection = new NpgsqlConnection("Server=localhost;Port=5555;Database=pokemondb;User Id=postgres;Password=123456789;");
-                Connection.Open();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-
+            _database = database;
         }
 
-        public bool AddPokemon(Pokemon pokemon)
+        public void AddPokemon(Pokemon pokemon)
         {
-            int result = 0;
             try
             {
-                NpgsqlConnection connection = Connection;
-
                 string query = @"INSERT INTO pokemon(name,""pokeId"",type,sprite) VALUES (@name,@pokeId,@type,@sprite)";
-                result = connection.Execute(sql: query, param: pokemon);
-
-                return result == 1;
+                _database.SaveData(pokemon, query);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return result == 0;
             }
         }
 
-        public bool RemovePokemon(Pokemon pokemon)
+        public void RemovePokemon(Pokemon pokemon)
         {
-            int result = 0;
             try
             {
-                NpgsqlConnection connection = Connection;
-
                 string query = $"DELETE FROM pokemon WHERE id = {pokemon.Id}";
-                result = connection.Execute(sql: query);
-
-                return result == 1;
+                _database.RemoveData(pokemon,query);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return result == 0;
             }
         }
 
-        public bool UpdatePokemon(Pokemon pokemon)
+        public void UpdatePokemon(Pokemon pokemon)
         {
-            int result = 0;
+        
             try
             {
-                NpgsqlConnection connection = Connection;
-
                 string query = $"UPDATE pokemon SET nickname = '{pokemon.Nickname}' WHERE id = {pokemon.Id};";
-                result = connection.Execute(sql: query, param: pokemon);
-
-                return result == 1;
+                _database.UpdateData(pokemon, query);
 
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return result == 0;
             }
         }
 
@@ -89,11 +63,10 @@ namespace PokeWallet.Infrastructure
             List<Pokemon> pokemon = new List<Pokemon>();
             try
             {
-                NpgsqlConnection connection = Connection;
                 string query = @"SELECT * FROM pokemon";
-                var pokemons = connection.Query<Pokemon>(sql: query).OrderBy(p => p.Id);
+                var pokemons = _database.LoadData<Pokemon>(query);
 
-                return pokemons.ToList();
+                return pokemons;
             }
             catch (Exception ex)
             {
@@ -103,34 +76,27 @@ namespace PokeWallet.Infrastructure
 
         }
 
-        public bool AddPokeWalletInstance(int trainerId, int pokemonId)
+        public void AddPokeWalletInstance(int trainerId, int pokemonId)
         {
-            int result = 0;
             try
             {
-                NpgsqlConnection connection = Connection;
-
                 string query = $@"INSERT INTO ""pokeWallet""(""pokemonId"",""trainerId"") values({pokemonId}, {trainerId})";
-                result = connection.Execute(sql: query);
+                _database.SaveData(trainerId, query);
 
-                return result == 1;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return result == 0;
             }
         }
         public void GetPokeWallet(Trainer trainer)
         {
-            List<Trainer> pokemon = new List<Trainer>();
             try
             {
-                NpgsqlConnection connection = Connection;
-                string query = @"SELECT ""pokemonId"" FROM ""pokeWallet"" WHERE ""trainerId"" = @Id";
-                var pokemons = connection.Query<PokeWalletDb>(sql: query, param: trainer);
+                string query = $@"SELECT ""pokemonId"" FROM ""pokeWallet"" WHERE ""trainerId"" = {trainer.Id}";
+                var output = _database.LoadData<PokeWalletDb>(query);
 
-                foreach (PokeWalletDb pokeWalletDb in pokemons)
+                foreach (PokeWalletDb pokeWalletDb in output)
                 {
                     trainer.PokeWallet.Add(pokeWalletDb.PokemonId);
                 }
@@ -141,118 +107,85 @@ namespace PokeWallet.Infrastructure
             }
         }
 
-        public bool RemovePokeWalletInstance(int trainerId, int pokemonId)
+        public void RemovePokeWalletInstance(int trainerId, int pokemonId)
         {
-            int result = 0;
             try
             {
-                NpgsqlConnection connection = Connection;
-
                 string query = $@"DELETE FROM ""pokeWallet"" WHERE ""pokemonId"" = {pokemonId} AND ""trainerId"" = {trainerId}";
-                result = connection.Execute(sql: query);
-
-                return result == 1;
+                _database.RemoveData(trainerId,query);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return result == 0;
             }
         }
 
-        public bool ClearTrainerPokeWallet(int trainerId)
+        public void ClearTrainerPokeWallet(int trainerId)
         {
-            int result = 0;
             try
             {
-                NpgsqlConnection connection = Connection;
-
                 string query = $@"DELETE FROM ""pokeWallet"" WHERE ""trainerId"" = {trainerId}";
-                result = connection.Execute(sql: query);
-
-                return result == 1;
+                _database.RemoveData(trainerId, query);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return result == 0;
             }
         }
 
-        public bool AddTrainer(Trainer trainer)
+        public void AddTrainer(Trainer trainer)
         {
-            int result = 0;
             try
             {
-                NpgsqlConnection connection = Connection;
-
-
                 string query = @"INSERT INTO trainer(name, age) values(@name, @age)";
-                result = connection.Execute(sql: query, param: trainer);
-
-                return result == 1;
+                _database.SaveData(trainer, query);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return result == 0;
             }
         }
 
-        public bool RemoveTrainer(Trainer trainer)
+        public void RemoveTrainer(Trainer trainer)
         {
-            int result = 0;
             try
             {
-                NpgsqlConnection connection = Connection;
-
                 string query = $"DELETE FROM trainer WHERE id = {trainer.Id}";
-                result = connection.Execute(sql: query);
-
-                return result == 1;
+                _database.RemoveData(trainer, query);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return result == 0;
             }
         }
 
-        public bool UpdateTrainer(Trainer trainer)
+        public void UpdateTrainer(Trainer trainer)
         {
-            int result = 0;
             try
             {
-                NpgsqlConnection connection = Connection;
-
                 string query = $"UPDATE trainer SET name = '{trainer.Name}' age = '{trainer.Age}' WHERE id = {trainer.Id};";
-                result = connection.Execute(sql: query, param: trainer);
-
-                return result == 1;
-
+                _database.UpdateData(trainer, query);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return result == 0;
             }
         }
 
         public List<Trainer> GetTrainers()
         {
-            List<Trainer> pokemon = new List<Trainer>();
+            List<Trainer> emptyTrainerList = new List<Trainer>();
             try
             {
-                NpgsqlConnection connection = Connection;
                 string query = @"SELECT * FROM trainer";
-                var trainers = connection.Query<Trainer>(sql: query);
+                var trainers = _database.LoadData<Trainer>(query);
 
-                return trainers.ToList();
+                return trainers;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return pokemon;
+                return emptyTrainerList;
             }
         }
     }
